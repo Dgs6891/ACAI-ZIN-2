@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Açaí Zin | Carrinho e Pedido Online</title>
+    <style>
+        /* Estilos CSS (Mantidos e Ajustados) */
+        :root {
+            --primary-color: #5D3E8C; /* Roxo principal */
+            --secondary-color: #FFFFFF;
+            --accent-color: #FACC15; /* Amarelo para destaque */
+            --background-color: #EFEFEF;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            line-height: 1.6;
+            color: var(--text-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--secondary-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Cabeçalho */
+        header {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        .logo-icon {
+            font-size: 2.5em;
+            display: block;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        /* Seções do Formulário e Carrinho */
+        .order-content {
+            display: flex;
+            flex-wrap: wrap; /* Permite quebras para responsividade */
+            padding: 30px;
+            gap: 20px;
+        }
+
+        .acai-builder, .cart-summary {
+            flex: 1;
+            min-width: 300px; /* Garante espaço mínimo para mobile */
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fcfcfc;
+            border: 1px solid #eee;
+        }
+
+        .cart-summary {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .form-section h2, .cart-summary h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-left: 5px solid var(--accent-color);
+            padding-left: 10px;
+        }
+        
+        .item-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .item-option:hover {
+            background-color: #f7f7f7;
+        }
+
+        .item-option input[type="radio"], 
+        .item-option input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .price {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .limit-info {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        /* Botões */
+        button {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        #add-to-cart {
+            background-color: #38C172; /* Verde para adicionar */
+            margin-bottom: 20px;
+        }
+        
+        #add-to-cart:hover {
+            background-color: #2F9E5C;
+        }
+
+        #submit-order {
+            background-color: var(--primary-color);
+        }
+        
+        #submit-order:hover {
+            background-color: #7952B3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Carrinho */
+        #cart-items {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        #cart-items li {
+            padding: 10px 0;
+            border-bottom: 1px dotted #ccc;
+            font-size: 0.95em;
+        }
+
+        #cart-items li:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+        
+        .item-details strong {
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .remove-item {
+            background: none;
+            border: none;
+            color: #E3342F;
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 10px;
+        }
+
+        .cart-total-price {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: block;
+            text-align: right;
+            margin-top: 15px;
+        }
+        
+        /* Campos de Entrega */
+        .delivery-fields label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .delivery-fields input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        /* Rodapé */
+        footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #777;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .order-content {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .acai-builder, .cart-summary {
+                min-width: 100%;
+            }
+            .cart-total-price {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="logo-icon">💜✨</span>
+            <h1>AÇAÍ ZIN</h1>
+            <p>Monte seu pedido com quantos açaís quiser!</p>
+        </header>
+
+        <div class="order-content">
+            <section class="acai-builder">
+                <h2>🥣 Monte Seu Açaí</h2>
+                <form id="acai-order-form">
+                    
+                    <div class="form-section">
+                        <h2>1. Tamanho</h2>
+                        <div class="radio-group" id="tamanho-options">
+                            <label class="item-option">
+                                <input type="radio" name="tamanho" value="300ml" data-price="10.00" required>
+                                <span>300ml</span>
+                                <span class="price">R$ 10,00</span>
+                            </label>
+                            <label class="item-option">
+                                <input type="radio" name="tamanho" value="400ml" data-price="12.00">
+                                <span>400ml</span>
+                                <span class="price">R$ 12,00</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>2. Complementos (Máx. 4)</h2>
+                        <span class="limit-info">Selecione até 4 opções.</span>
+                        <div class="checkbox-group" id="complementos-options">
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Leite em pó"><span>Leite em pó</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Granola"><span>Granola</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Farinha Láctea"><span>Farinha Láctea</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Ovomaltine"><span>Ovomaltine</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="MM's"><span>MM’s</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Leite condensado"><span>Leite condensado</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Creme de avelã"><span>Creme de avelã (Chocolate)</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Amendoim triturado"><span>Amendoim triturado</span></label>
+                            <label class="item-option"><input type="checkbox" name="complemento" value="Chocoball"><span>Chocoball</span></label>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2>3. Frutas (Máx. 2)</h2>
+                        <span class="limit-info">Selecione até 2 opções.</span>
+                        <div class="checkbox-group" id="frutas-options">
+                            <label class="item-option"><input type="checkbox" name="fruta" value="Morango"><span>Morango 🍓</span></label>
+                            <label class="item-option"><input type="checkbox" name="fruta" value="Banana"><span>Banana 🍌</span></label>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-to-cart" disabled>✅ Adicionar ao Carrinho</button>
+                </form>
+            </section>
+
+            <section class="cart-summary">
+                <h2>🛒 Seu Pedido</h2>
+                <ul id="cart-items">
+                    <p id="empty-cart-message" style="color:#777;">O carrinho está vazio. Monte seu primeiro açaí!</p>
+                </ul>
+                
+                <hr>
+
+                <div class="form-section delivery-fields">
+                    <h2>🏠 Dados para Entrega</h2>
+                    <label for="nome">Nome Completo:</label>
+                    <input type="text" id="nome" required placeholder="Seu Nome">
+
+                    <label for="whatsapp">WhatsApp (com DDD):</label>
+                    <input type="tel" id="whatsapp" required placeholder="(83) 9XXXX-XXXX" maxlength="15">
+
+                    <label for="bloco">Bloco / Torre:</label>
+                    <input type="text" id="bloco" placeholder="Ex: Bloco B">
+                    
+                    <label for="apartamento">Apartamento / Casa:</label>
+                    <input type="text" id="apartamento" required placeholder="Nº do Apartamento ou Casa">
+                </div>
+
+                <p style="text-align: right; font-size: 1.2em;">Total Geral:</p>
+                <span id="total-geral" class="cart-total-price">R$ 0,00</span>
+                
+                <button type="submit" id="submit-order" disabled>📲 Enviar Pedido (WhatsApp)</button>
+            </section>
+        </div>
+        
+        <footer>
+            <p>Açaí Zin – seu momento mais gostoso do dia! | Contato: +55 83 98672-4134</p>
+        </footer>
+    </div>
+
+    <script>
+        // Lógica JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('acai-order-form');
+            const cartItemsList = document.getElementById('cart-items');
+            const totalGeralDisplay = document.getElementById('total-geral');
+            const addToCartBtn = document.getElementById('add-to-cart');
+            const submitOrderBtn = document.getElementById('submit-order');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+            
+            const tamanhoRadios = document.querySelectorAll('input[name="tamanho"]');
+            const complementosCheckboxes = document.querySelectorAll('input[name="complemento"]');
+            const frutasCheckboxes = document.querySelectorAll('input[name="fruta"]');
+
+            const whatsappInput = document.getElementById('whatsapp');
+
+            const MAX_COMPLEMENTOS = 4;
+            const MAX_FRUTAS = 2;
+            const WHATSAPP_NUMBER = '5583986724134';
+
+            let cart = [];
+
+            // --- FUNÇÕES DE LÓGICA E UTILIDADE ---
+
+            // 1. Aplica a máscara de telefone (ex: (83) 98672-4134)
+            function applyPhoneMask(value) {
+                value = value.replace(/\D/g, ""); // Remove tudo que não for dígito
+                value = value.replace(/^(\d{2})(\d)/g, "($1) $2"); // Coloca parênteses em volta dos dois primeiros dígitos
+                value = value.replace(/(\d)(\d{4})$/, "$1-$2"); // Coloca hífen antes dos 4 últimos dígitos
+                return value.slice(0, 15); // Limita o tamanho
+            }
+
+            whatsappInput.addEventListener('input', (e) => {
+                e.target.value = applyPhoneMask(e.target.value);
+            });
+
+            // 2. Limita a seleção de checkboxes
+            function limitCheckboxes(checkboxes, maxLimit) {
+                let checkedCount = 0;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        checkedCount++;
+                    }
+                });
+
+                checkboxes.forEach(cb => {
+                    if (!cb.checked && checkedCount >= maxLimit) {
+                        cb.disabled = true;
+                    } else {
+                        cb.disabled = false;
+                    }
+                });
+            }
+
+            // 3. Verifica se o item base (tamanho) foi escolhido
+            function checkFormValidity() {
+                const isTamanhoSelected = Array.from(tamanhoRadios).some(radio => radio.checked);
+                addToCartBtn.disabled = !isTamanhoSelected;
+            }
+
+            // 4. Calcula o preço do item atual
+            function calculateItemPrice() {
+                const selectedTamanho = document.querySelector('input[name="tamanho"]:checked');
+                return selectedTamanho ? parseFloat(selectedTamanho.getAttribute('data-price')) : 0;
+            }
+
+            // 5. Atualiza o carrinho e o total geral
+            function updateCart() {
+                cartItemsList.innerHTML = '';
+                let totalGeral = 0;
+
+                if (cart.length === 0) {
+                    emptyCartMessage.style.display = 'block';
+                    submitOrderBtn.disabled = true;
+                } else {
+                    emptyCartMessage.style.display = 'none';
+                    submitOrderBtn.disabled = false;
+                }
+
+                cart.forEach((item, index) => {
+                    totalGeral += item.price;
+                    
+                    const li = document.createElement('li');
+                    li.classList.add('cart-item-info');
+                    li.innerHTML = `
+                        <div class="item-details">
+                            <strong>${index + 1}. Açaí ${item.tamanho} (${item.price.toFixed(2).replace('.', ',')})</strong>
+                            <small>Complementos: ${item.complementos.length ? item.complementos.join(', ') : 'Nenhum'}</small><br>
+                            <small>Frutas: ${item.frutas.length ? item.frutas.join(', ') : 'Nenhuma'}</small>
+                        </div>
+                        <button class="remove-item" data-index="${index}" title="Remover item">✖</button>
+                    `;
+                    cartItemsList.appendChild(li);
+                });
+
+                totalGeralDisplay.textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+
+                // Adiciona listener para remover item
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.getAttribute('data-index'));
+                        cart.splice(index, 1);
+                        updateCart();
+                    });
+                });
+            }
+
+            // --- EVENT LISTENERS ---
+            
+            // Listener para todos os inputs do formulário de açaí
+            [...tamanhoRadios, ...complementosCheckboxes, ...frutasCheckboxes].forEach(input => {
+                input.addEventListener('change', () => {
+                    limitCheckboxes(complementosCheckboxes, MAX_COMPLEMENTOS);
+                    limitCheckboxes(frutasCheckboxes, MAX_FRUTAS);
+                    checkFormValidity();
+                });
+            });
+
+            // Ação de ADICIONAR AO CARRINHO
+            addToCartBtn.addEventListener('click', () => {
+                if (!form.checkValidity()) {
+                    alert('Por favor, selecione o tamanho do açaí para adicionar ao carrinho.');
+                    return;
+                }
+
+                const selectedTamanho = document.querySelector('input[name="tamanho"]:checked');
+                
+                const newItem = {
+                    tamanho: selectedTamanho.value,
+                    complementos: Array.from(complementosCheckboxes).filter(cb => cb.checked).map(cb => cb.value),
+                    frutas: Array.from(frutasCheckboxes).filter(cb => cb.checked).map(cb => cb.value),
+                    price: calculateItemPrice()
+                };
+
+                cart.push(newItem);
+                updateCart();
+
+                // Limpa o formulário para o próximo item
+                form.reset();
+                limitCheckboxes(complementosCheckboxes, MAX_COMPLEMENTOS);
+                limitCheckboxes(frutasCheckboxes, MAX_FRUTAS);
+                checkFormValidity();
+                alert('Açaí adicionado ao carrinho! Monte o próximo.');
+            });
+
+            // Ação de ENVIAR PEDIDO (WHATSAPP)
+            submitOrderBtn.addEventListener('click', () => {
+                if (cart.length === 0) {
+                    alert('Adicione pelo menos um açaí ao carrinho antes de enviar o pedido.');
+                    return;
+                }
+
+                // Validação dos campos de entrega
+                const nome = document.getElementById('nome').value.trim();
+                const whatsapp = document.getElementById('whatsapp').value.trim();
+                const bloco = document.getElementById('bloco').value.trim();
+                const apartamento = document.getElementById('apartamento').value.trim();
+                
+                if (!nome || !whatsapp || !apartamento) {
+                    alert('Por favor, preencha Nome, WhatsApp e Apartamento para a entrega.');
+                    return;
+                }
+                
+                // Montar a mensagem do WhatsApp
+                let message = `Olá, Açaí Zin! Quero fazer o seguinte pedido:%0A%0A`;
+                let totalGeral = 0;
+
+                cart.forEach((item, index) => {
+                    totalGeral += item.price;
+                    message += `*Item ${index + 1}:* Açaí ${item.tamanho} (R$ ${item.price.toFixed(2).replace('.', ',')})%0A`;
+                    message += `  - Compl.: ${item.complementos.length ? item.complementos.join(', ') : 'Nenhum'}%0A`;
+                    message += `  - Frutas: ${item.frutas.length ? item.frutas.join(', ') : 'Nenhuma'}%0A`;
+                });
+
+                message += `%0A*TOTAL GERAL:* R$ ${totalGeral.toFixed(2).replace('.', ',')}%0A%0A`;
+                
+                // Adicionar dados de entrega
+                message += `*DADOS DE ENTREGA:*%0A`;
+                message += `*Nome:* ${nome}%0A`;
+                message += `*WhatsApp:* ${whatsapp}%0A`;
+                message += `*Bloco/Torre:* ${bloco ? bloco : 'Não Informado'}%0A`;
+                message += `*Apto/Casa:* ${apartamento}%0A%0A`;
+                message += `Aguardando confirmação! 💜`;
+
+                // URL do WhatsApp
+                const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+                // Abrir o link do WhatsApp
+                window.open(whatsappURL, '_blank');
+            });
+
+            // Inicialização
+            checkFormValidity();
+        });
+    </script>
+</body>
+</html>
